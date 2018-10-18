@@ -1,0 +1,1 @@
+[{"outputType":{"type":"PROCESSED_RES"},"apkInfo":{"type":"MAIN","splits":[],"versionCode":3200,"versionName":"3.2.0","enabled":true,"outputFile":"openCVLibrary-debug.apk","fullName":"debug","baseName":"debug"},"path":"resources-debug.ap_","properties":{"packageId":"org.opencv","split":"","minSdkVersion":"24"}}]
