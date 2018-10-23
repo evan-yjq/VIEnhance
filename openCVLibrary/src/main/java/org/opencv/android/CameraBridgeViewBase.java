@@ -2,6 +2,9 @@ package org.opencv.android;
 
 import java.util.List;
 
+import android.graphics.Matrix;
+import android.view.Surface;
+import android.view.WindowManager;
 import org.opencv.BuildConfig;
 import org.opencv.R;
 import org.opencv.core.Mat;
@@ -56,12 +59,17 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
     public static final int RGBA = 1;
     public static final int GRAY = 2;
 
+
+    private WindowManager windowManager;
+
     public CameraBridgeViewBase(Context context, int cameraId) {
         super(context);
         mCameraIndex = cameraId;
         getHolder().addCallback(this);
         mMaxWidth = MAX_UNSPECIFIED;
         mMaxHeight = MAX_UNSPECIFIED;
+
+        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
     }
 
     public CameraBridgeViewBase(Context context, AttributeSet attrs) {
@@ -79,6 +87,9 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
         getHolder().addCallback(this);
         mMaxWidth = MAX_UNSPECIFIED;
         mMaxHeight = MAX_UNSPECIFIED;
+
+        windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+
         styledAttrs.recycle();
     }
 
@@ -410,21 +421,44 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
             Canvas canvas = getHolder().lockCanvas();
             if (canvas != null) {
                 canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+
+                int rotation = windowManager.getDefaultDisplay().getRotation();
+                int degrees = 0;
+                // config degrees as you need
+                switch (rotation) {
+                    case Surface.ROTATION_0:
+                        degrees = 90;
+                        break;
+                    case Surface.ROTATION_90:
+                        degrees = 0;
+                        break;
+                    case Surface.ROTATION_180:
+                        degrees = 270;
+                        break;
+                    case Surface.ROTATION_270:
+                        degrees = 180;
+                        break;
+                }
+                Matrix matrix = new Matrix();
+                matrix.postRotate(degrees);
+                Bitmap outputBitmap = Bitmap.createBitmap(mCacheBitmap, 0, 0, mCacheBitmap.getWidth(), mCacheBitmap.getHeight(), matrix, true);
+
+
                 if (BuildConfig.DEBUG)
                     Log.d(TAG, "mStretch value: " + mScale);
 
                 if (mScale != 0) {
-                    canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),
-                         new Rect((int)((canvas.getWidth() - mScale*mCacheBitmap.getWidth()) / 2),
-                         (int)((canvas.getHeight() - mScale*mCacheBitmap.getHeight()) / 2),
-                         (int)((canvas.getWidth() - mScale*mCacheBitmap.getWidth()) / 2 + mScale*mCacheBitmap.getWidth()),
-                         (int)((canvas.getHeight() - mScale*mCacheBitmap.getHeight()) / 2 + mScale*mCacheBitmap.getHeight())), null);
+                    canvas.drawBitmap(outputBitmap, new Rect(0,0,outputBitmap.getWidth(), outputBitmap.getHeight()),
+                         new Rect((int)((canvas.getWidth() - mScale*outputBitmap.getWidth()) / 2),
+                         (int)((canvas.getHeight() - mScale*outputBitmap.getHeight()) / 2),
+                         (int)((canvas.getWidth() - mScale*outputBitmap.getWidth()) / 2 + mScale*outputBitmap.getWidth()),
+                         (int)((canvas.getHeight() - mScale*outputBitmap.getHeight()) / 2 + mScale*outputBitmap.getHeight())), null);
                 } else {
-                     canvas.drawBitmap(mCacheBitmap, new Rect(0,0,mCacheBitmap.getWidth(), mCacheBitmap.getHeight()),
-                         new Rect((canvas.getWidth() - mCacheBitmap.getWidth()) / 2,
-                         (canvas.getHeight() - mCacheBitmap.getHeight()) / 2,
-                         (canvas.getWidth() - mCacheBitmap.getWidth()) / 2 + mCacheBitmap.getWidth(),
-                         (canvas.getHeight() - mCacheBitmap.getHeight()) / 2 + mCacheBitmap.getHeight()), null);
+                     canvas.drawBitmap(outputBitmap, new Rect(0,0,outputBitmap.getWidth(), outputBitmap.getHeight()),
+                         new Rect((canvas.getWidth() - outputBitmap.getWidth()) / 2,
+                         (canvas.getHeight() - outputBitmap.getHeight()) / 2,
+                         (canvas.getWidth() - outputBitmap.getWidth()) / 2 + outputBitmap.getWidth(),
+                         (canvas.getHeight() - outputBitmap.getHeight()) / 2 + outputBitmap.getHeight()), null);
                 }
 
                 if (mFpsMeter != null) {

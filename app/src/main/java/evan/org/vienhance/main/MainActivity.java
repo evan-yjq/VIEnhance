@@ -24,10 +24,11 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements CvCameraViewListener2 {
+public class MainActivity extends AppCompatActivity {
     private static final String TAG = "OCVSample::Activity";
 
     private CameraBridgeViewBase mOpenCvCameraView;
+    private CameraBridgeViewBase mOpenCvCameraView2;
     private boolean              mIsJavaCamera = true;
     private MenuItem             mItemSwitchCamera = null;
 
@@ -52,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
         Log.i(TAG, "Instantiated new " + this.getClass());
     }
 
-    /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");
@@ -61,24 +61,59 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
 
         setContentView(R.layout.activity_main);
 
-        mOpenCvCameraView = findViewById(R.id.tutorial1_activity_java_surface_view);
+        mOpenCvCameraView = findViewById(R.id.surface_view);
+        mOpenCvCameraView2 = findViewById(R.id.surface_view_2);
 
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
+        mOpenCvCameraView2.setVisibility(SurfaceView.VISIBLE);
 
-        mOpenCvCameraView.setCvCameraViewListener(this);
+        mOpenCvCameraView.setCvCameraViewListener(listener);
+        mOpenCvCameraView2.setCvCameraViewListener(listener2);
     }
 
+    private CvCameraViewListener2 listener = new CvCameraViewListener2() {
+        @Override
+        public void onCameraViewStarted(int width, int height) {
+
+        }
+
+        @Override
+        public void onCameraViewStopped() {
+
+        }
+
+        @Override
+        public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
+            return inputFrame.rgba();
+        }
+    };
+
+    private CvCameraViewListener2 listener2 = new CvCameraViewListener2() {
+        @Override
+        public void onCameraViewStarted(int width, int height) {
+
+        }
+        @Override
+        public void onCameraViewStopped() {
+
+        }
+        @Override
+        public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
+            return inputFrame.gray();
+        }
+    };
+
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
+        if (mOpenCvCameraView2 != null)
+            mOpenCvCameraView2.disableView();
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
@@ -89,19 +124,12 @@ public class MainActivity extends AppCompatActivity implements CvCameraViewListe
         }
     }
 
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
-    }
-
-    public void onCameraViewStarted(int width, int height) {
-    }
-
-    public void onCameraViewStopped() {
-    }
-
-    public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
-        return inputFrame.rgba();
+        if (mOpenCvCameraView2 != null)
+            mOpenCvCameraView2.disableView();
     }
 }
