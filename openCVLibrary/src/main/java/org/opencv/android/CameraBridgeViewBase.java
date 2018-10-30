@@ -2,7 +2,10 @@ package org.opencv.android;
 
 import java.util.List;
 
-import android.graphics.Matrix;
+import android.annotation.SuppressLint;
+import android.graphics.*;
+import android.os.Handler;
+import android.os.Message;
 import android.view.Surface;
 import android.view.WindowManager;
 import org.opencv.BuildConfig;
@@ -15,9 +18,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -144,45 +144,45 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
          * The returned values - is a modified frame which needs to be displayed on the screen.
          * TODO: pass the parameters specifying the format of the frame (BPP, YUV or RGB and etc)
          */
-        public Mat onCameraFrame(CvCameraViewFrame inputFrame);
+        public void onCameraFrame(CvCameraViewFrame inputFrame, Handler handler);
     };
 
-    protected class CvCameraViewListenerAdapter implements CvCameraViewListener2  {
-        public CvCameraViewListenerAdapter(CvCameraViewListener oldStypeListener) {
-            mOldStyleListener = oldStypeListener;
-        }
-
-        public void onCameraViewStarted(int width, int height) {
-            mOldStyleListener.onCameraViewStarted(width, height);
-        }
-
-        public void onCameraViewStopped() {
-            mOldStyleListener.onCameraViewStopped();
-        }
-
-        public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
-             Mat result = null;
-             switch (mPreviewFormat) {
-                case RGBA:
-                    result = mOldStyleListener.onCameraFrame(inputFrame.rgba());
-                    break;
-                case GRAY:
-                    result = mOldStyleListener.onCameraFrame(inputFrame.gray());
-                    break;
-                default:
-                    Log.e(TAG, "Invalid frame format! Only RGBA and Gray Scale are supported!");
-            };
-
-            return result;
-        }
-
-        public void setFrameFormat(int format) {
-            mPreviewFormat = format;
-        }
-
-        private int mPreviewFormat = RGBA;
-        private CvCameraViewListener mOldStyleListener;
-    };
+//    protected class CvCameraViewListenerAdapter implements CvCameraViewListener2  {
+//        public CvCameraViewListenerAdapter(CvCameraViewListener oldStypeListener) {
+//            mOldStyleListener = oldStypeListener;
+//        }
+//
+//        public void onCameraViewStarted(int width, int height) {
+//            mOldStyleListener.onCameraViewStarted(width, height);
+//        }
+//
+//        public void onCameraViewStopped() {
+//            mOldStyleListener.onCameraViewStopped();
+//        }
+//
+//        public Mat onCameraFrame(CvCameraViewFrame inputFrame) {
+//             Mat result = null;
+//             switch (mPreviewFormat) {
+//                case RGBA:
+//                    result = mOldStyleListener.onCameraFrame(inputFrame.rgba());
+//                    break;
+//                case GRAY:
+//                    result = mOldStyleListener.onCameraFrame(inputFrame.gray());
+//                    break;
+//                default:
+//                    Log.e(TAG, "Invalid frame format! Only RGBA and Gray Scale are supported!");
+//            };
+//
+//            return result;
+//        }
+//
+//        public void setFrameFormat(int format) {
+//            mPreviewFormat = format;
+//        }
+//
+//        private int mPreviewFormat = RGBA;
+//        private CvCameraViewListener mOldStyleListener;
+//    };
 
     /**
      * This class interface is abstract representation of single frame from camera for onCameraFrame callback
@@ -275,11 +275,11 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
         mListener = listener;
     }
 
-    public void setCvCameraViewListener(CvCameraViewListener listener) {
-        CvCameraViewListenerAdapter adapter = new CvCameraViewListenerAdapter(listener);
-        adapter.setFrameFormat(mPreviewFormat);
-        mListener = adapter;
-    }
+//    public void setCvCameraViewListener(CvCameraViewListener listener) {
+//        CvCameraViewListenerAdapter adapter = new CvCameraViewListenerAdapter(listener);
+//        adapter.setFrameFormat(mPreviewFormat);
+//        mListener = adapter;
+//    }
 
     /**
      * This method sets the maximum size that camera frame is allowed to be. When selecting
@@ -295,14 +295,14 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
         mMaxHeight = maxHeight;
     }
 
-    public void SetCaptureFormat(int format)
-    {
-        mPreviewFormat = format;
-        if (mListener instanceof CvCameraViewListenerAdapter) {
-            CvCameraViewListenerAdapter adapter = (CvCameraViewListenerAdapter) mListener;
-            adapter.setFrameFormat(mPreviewFormat);
-        }
-    }
+//    public void SetCaptureFormat(int format)
+//    {
+//        mPreviewFormat = format;
+//        if (mListener instanceof CvCameraViewListenerAdapter) {
+//            CvCameraViewListenerAdapter adapter = (CvCameraViewListenerAdapter) mListener;
+//            adapter.setFrameFormat(mPreviewFormat);
+//        }
+//    }
 
     /**
      * Called when mSyncObject lock is held
@@ -396,77 +396,89 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
      * then displayed on the screen.
      * @param frame - the current frame to be delivered
      */
+    @SuppressLint("HandlerLeak")
+    private Handler h = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.arg1 == 1){
+                Mat modified = (Mat)msg.obj;
+                boolean bmpValid = true;
+                if (modified != null) {
+                    try {
+                        Utils.matToBitmap(modified, mCacheBitmap);
+                    } catch(Exception e) {
+                        Log.e(TAG, "Mat type: " + modified);
+                        Log.e(TAG, "Bitmap type: " + mCacheBitmap.getWidth() + "*" + mCacheBitmap.getHeight());
+                        Log.e(TAG, "Utils.matToBitmap() throws an exception: " + e.getMessage());
+                        bmpValid = false;
+                    }
+                }
+
+                if (bmpValid && mCacheBitmap != null) {
+                    Canvas canvas = getHolder().lockCanvas();
+                    if (canvas != null) {
+                        canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+
+                        int rotation = windowManager.getDefaultDisplay().getRotation();
+                        int degrees = 0;
+                        // config degrees as you need
+                        switch (rotation) {
+                            case Surface.ROTATION_0:
+                                degrees = 90;
+                                break;
+                            case Surface.ROTATION_90:
+                                degrees = 0;
+                                break;
+                            case Surface.ROTATION_180:
+                                degrees = 270;
+                                break;
+                            case Surface.ROTATION_270:
+                                degrees = 180;
+                                break;
+                        }
+                        Matrix matrix = new Matrix();
+                        matrix.postRotate(degrees);
+                        Bitmap outputBitmap = Bitmap.createBitmap(mCacheBitmap, 0, 0, mCacheBitmap.getWidth(), mCacheBitmap.getHeight(), matrix, true);
+
+
+                        if (BuildConfig.DEBUG)
+                            Log.d(TAG, "mStretch value: " + mScale);
+
+//                if (mScale != 0) {
+//                    canvas.drawBitmap(outputBitmap, new Rect(0,0,outputBitmap.getWidth(), outputBitmap.getHeight()),
+//                         new Rect((int)((canvas.getWidth() - mScale*outputBitmap.getWidth()) / 2),
+//                         (int)((canvas.getHeight() - mScale*outputBitmap.getHeight()) / 2),
+//                         (int)((canvas.getWidth() - mScale*outputBitmap.getWidth()) / 2 + mScale*outputBitmap.getWidth()),
+//                         (int)((canvas.getHeight() - mScale*outputBitmap.getHeight()) / 2 + mScale*outputBitmap.getHeight())), null);
+//                } else {
+//                     canvas.drawBitmap(outputBitmap, new Rect(0,0,outputBitmap.getWidth(), outputBitmap.getHeight()),
+//                         new Rect((canvas.getWidth() - outputBitmap.getWidth()) / 2,
+//                         (canvas.getHeight() - outputBitmap.getHeight()) / 2,
+//                         (canvas.getWidth() - outputBitmap.getWidth()) / 2 + outputBitmap.getWidth(),
+//                         (canvas.getHeight() - outputBitmap.getHeight()) / 2 + outputBitmap.getHeight()), null);
+//                }
+                        canvas.drawBitmap(outputBitmap, new Rect(0, 0, outputBitmap.getWidth(), outputBitmap.getHeight()),
+                                new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), new Paint());
+
+                        if (mFpsMeter != null) {
+                            mFpsMeter.measure();
+                            mFpsMeter.draw(canvas, 20, 30);
+                        }
+                        getHolder().unlockCanvasAndPost(canvas);
+                    }
+                }
+            }
+        }
+    };
     protected void deliverAndDrawFrame(CvCameraViewFrame frame) {
-        Mat modified;
-
         if (mListener != null) {
-            modified = mListener.onCameraFrame(frame);
-        } else {
-            modified = frame.rgba();
-        }
-
-        boolean bmpValid = true;
-        if (modified != null) {
-            try {
-                Utils.matToBitmap(modified, mCacheBitmap);
-            } catch(Exception e) {
-                Log.e(TAG, "Mat type: " + modified);
-                Log.e(TAG, "Bitmap type: " + mCacheBitmap.getWidth() + "*" + mCacheBitmap.getHeight());
-                Log.e(TAG, "Utils.matToBitmap() throws an exception: " + e.getMessage());
-                bmpValid = false;
-            }
-        }
-
-        if (bmpValid && mCacheBitmap != null) {
-            Canvas canvas = getHolder().lockCanvas();
-            if (canvas != null) {
-                canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
-
-                int rotation = windowManager.getDefaultDisplay().getRotation();
-                int degrees = 0;
-                // config degrees as you need
-                switch (rotation) {
-                    case Surface.ROTATION_0:
-                        degrees = 90;
-                        break;
-                    case Surface.ROTATION_90:
-                        degrees = 0;
-                        break;
-                    case Surface.ROTATION_180:
-                        degrees = 270;
-                        break;
-                    case Surface.ROTATION_270:
-                        degrees = 180;
-                        break;
-                }
-                Matrix matrix = new Matrix();
-                matrix.postRotate(degrees);
-                Bitmap outputBitmap = Bitmap.createBitmap(mCacheBitmap, 0, 0, mCacheBitmap.getWidth(), mCacheBitmap.getHeight(), matrix, true);
-
-
-                if (BuildConfig.DEBUG)
-                    Log.d(TAG, "mStretch value: " + mScale);
-
-                if (mScale != 0) {
-                    canvas.drawBitmap(outputBitmap, new Rect(0,0,outputBitmap.getWidth(), outputBitmap.getHeight()),
-                         new Rect((int)((canvas.getWidth() - mScale*outputBitmap.getWidth()) / 2),
-                         (int)((canvas.getHeight() - mScale*outputBitmap.getHeight()) / 2),
-                         (int)((canvas.getWidth() - mScale*outputBitmap.getWidth()) / 2 + mScale*outputBitmap.getWidth()),
-                         (int)((canvas.getHeight() - mScale*outputBitmap.getHeight()) / 2 + mScale*outputBitmap.getHeight())), null);
-                } else {
-                     canvas.drawBitmap(outputBitmap, new Rect(0,0,outputBitmap.getWidth(), outputBitmap.getHeight()),
-                         new Rect((canvas.getWidth() - outputBitmap.getWidth()) / 2,
-                         (canvas.getHeight() - outputBitmap.getHeight()) / 2,
-                         (canvas.getWidth() - outputBitmap.getWidth()) / 2 + outputBitmap.getWidth(),
-                         (canvas.getHeight() - outputBitmap.getHeight()) / 2 + outputBitmap.getHeight()), null);
-                }
-
-                if (mFpsMeter != null) {
-                    mFpsMeter.measure();
-                    mFpsMeter.draw(canvas, 20, 30);
-                }
-                getHolder().unlockCanvasAndPost(canvas);
-            }
+            mListener.onCameraFrame(frame, h);
+        }else {
+            Message m = new Message();
+            m.arg1 = 1;
+            m.obj = frame.rgba();
+            h.sendMessage(m);
         }
     }
 
@@ -505,7 +517,7 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
      * @param surfaceHeight
      * @return optimal frame size
      */
-    protected Size calculateCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor, int surfaceWidth, int surfaceHeight) {
+    protected Size calculateCameraFrameSize(List<?> supportedSizes, ListItemAccessor accessor, int surfaceHeight, int surfaceWidth) {
         int calcWidth = 0;
         int calcHeight = 0;
 
@@ -518,8 +530,10 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
 
             if (width <= maxAllowedWidth && height <= maxAllowedHeight) {
                 if (width >= calcWidth && height >= calcHeight) {
-                    calcWidth = (int) width;
-                    calcHeight = (int) height;
+                    if (width == height) {
+                        calcWidth = (int) width;
+                        calcHeight = (int) height;
+                    }
                 }
             }
         }
