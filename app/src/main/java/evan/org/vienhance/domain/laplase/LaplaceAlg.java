@@ -19,6 +19,12 @@ public class LaplaceAlg implements enhanceAlg{
 
     private static volatile LaplaceAlg INSTANCE;
 
+    public static final float MASK_CENTER = 5;
+
+    public static final float MASK_ROW = -1;
+
+    public static final float MASK_COL = -1;
+
     private AppExecutors mAppExecutors;
 
     private Mat src;
@@ -85,9 +91,9 @@ public class LaplaceAlg implements enhanceAlg{
 
     @Override
     public LaplaceAlg args(float[] args) {
-        this.center = args != null ? args[0] : 3;
-        this.row = args != null ? args[1] : 0;
-        this.col = args != null ? args[2] : -1;
+        this.center = args != null ? args[0] : MASK_CENTER;
+        this.row = args != null ? args[1] : MASK_ROW;
+        this.col = args != null ? args[2] : MASK_COL;
         return this;
     }
 }
