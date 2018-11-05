@@ -1,4 +1,4 @@
-package evan.org.vienhance.domain.laplase;
+package evan.org.vienhance.domain.laplace;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -19,11 +19,11 @@ public class LaplaceAlg implements enhanceAlg{
 
     private static volatile LaplaceAlg INSTANCE;
 
-    public static final float MASK_CENTER = 5;
+    private static final float MASK_CENTER = 5;
 
-    public static final float MASK_ROW = -1;
+    private static final float MASK_ROW = -1;
 
-    public static final float MASK_COL = -1;
+    private static final float MASK_COL = -1;
 
     private AppExecutors mAppExecutors;
 

@@ -2,7 +2,6 @@ package evan.org.vienhance.domain.original;
 
 import android.support.annotation.NonNull;
 import evan.org.vienhance.domain.enhanceAlg;
-import evan.org.vienhance.domain.laplase.LaplaceAlg;
 import evan.org.vienhance.util.AppExecutors;
 import org.opencv.core.Mat;
 

@@ -50,12 +50,12 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     @Override
-    public void getEnhance(String type, final Handler handler) {
+    public void getEnhance(int type, final Handler handler) {
         mUseCaseHandler.execute(new enhanceUseCase(), new enhanceUseCase.RequestValues(src, args, type),
                 new UseCase.UseCaseCallback<enhanceUseCase.ResponseValue>() {
                     @Override
                     public void onSuccess(enhanceUseCase.ResponseValue response) {
-                        mView.show(response.getDst(), handler);
+                        mView.show(response.getDst(), handler, response.getType());
                     }
 
                     @Override

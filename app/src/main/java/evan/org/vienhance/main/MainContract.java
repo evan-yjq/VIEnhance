@@ -13,7 +13,7 @@ public interface MainContract {
 
     interface View extends BaseView<Presenter> {
 
-        void show(Mat dst, Handler handler);
+        void show(Mat dst, Handler handler, int type);
     }
 
 
@@ -23,6 +23,6 @@ public interface MainContract {
 
         T setArgs(float[] args);
 
-        void getEnhance(String type, Handler handler);
+        void getEnhance(int type, Handler handler);
     }
 }

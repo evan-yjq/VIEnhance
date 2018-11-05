@@ -4,7 +4,6 @@ package evan.org.vienhance.main;
  * Create By yejiaquan in 2018/10/17 11:06
  */
 
-import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.*;
@@ -17,7 +16,6 @@ import android.util.Log;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main::Activity";
 
-    @SuppressLint("ClickableViewAccessibility")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(TAG, "called onCreate");

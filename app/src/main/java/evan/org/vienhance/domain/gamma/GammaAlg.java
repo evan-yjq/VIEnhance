@@ -3,13 +3,9 @@ package evan.org.vienhance.domain.gamma;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import evan.org.vienhance.domain.enhanceAlg;
-import evan.org.vienhance.domain.laplase.LaplaceAlg;
 import evan.org.vienhance.util.AppExecutors;
-import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.Scalar;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 import static org.opencv.core.Core.NORM_MINMAX;

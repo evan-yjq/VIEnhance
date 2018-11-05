@@ -5,12 +5,13 @@ import android.support.annotation.Nullable;
 import evan.org.vienhance.UseCase;
 import evan.org.vienhance.domain.gamma.GammaAlg;
 import evan.org.vienhance.domain.gray.GrayAlg;
-import evan.org.vienhance.domain.laplase.LaplaceAlg;
+import evan.org.vienhance.domain.laplace.LaplaceAlg;
 import evan.org.vienhance.domain.original.OriginalAlg;
 import evan.org.vienhance.util.AppExecutors;
 import org.opencv.core.Mat;
 
 import static evan.org.vienhance.util.Objects.checkNotNull;
+import static evan.org.vienhance.domain.enhanceFilter.*;
 
 /**
  * Create By yejiaquan in 2018/10/25 13:48
@@ -24,16 +25,16 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
     protected void executeUseCase(RequestValues requestValues) {
         Mat src = requestValues.getSrc();
         float[]args = requestValues.getArgs();
-        String type = requestValues.getType();
+        final int type = requestValues.getType();
         enhanceAlg alg;
         switch (type) {
-            case "laplace":
+            case LAPLACE:
                 alg = LaplaceAlg.getInstance(new AppExecutors()).src(src).args(args);
                 break;
-            case "gama":
+            case GAMMA:
                 alg = GammaAlg.getInstance(new AppExecutors()).src(src);
                 break;
-            case "gray":
+            case GRAY:
                 alg = GrayAlg.getInstance(new AppExecutors()).src(src);
                 break;
             default:
@@ -43,7 +44,7 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
         alg.result(new enhanceAlg.AlgCallback() {
             @Override
             public void result(Mat dst) {
-                getUseCaseCallback().onSuccess(new ResponseValue(dst));
+                getUseCaseCallback().onSuccess(new ResponseValue(dst, type));
             }
         });
 
@@ -55,9 +56,9 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
 
         private final float[] args;
 
-        private final String type;
+        private final int type;
 
-        public RequestValues(@NonNull Mat src, @Nullable float[] args, @NonNull String type) {
+        public RequestValues(@NonNull Mat src, @Nullable float[] args, @NonNull int type) {
             this.src = checkNotNull(src,"src cannot be null!");
             this.type = checkNotNull(type,"type cannot be null!");
             this.args = args;
@@ -71,7 +72,7 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
             return args;
         }
 
-        public String getType() {
+        public int getType() {
             return type;
         }
     }
@@ -79,12 +80,19 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
     public static final class ResponseValue implements UseCase.ResponseValue {
         private final Mat dst;
 
-        public ResponseValue(@NonNull Mat dst) {
+        private final int type;
+
+        public ResponseValue(@NonNull Mat dst, int type) {
             this.dst = checkNotNull(dst, "dst cannot be null!");
+            this.type = checkNotNull(type, "type cannot be null!");
         }
 
         public Mat getDst() {
             return dst;
+        }
+
+        public int getType() {
+            return type;
         }
     }
 }

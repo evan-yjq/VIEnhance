@@ -25,7 +25,7 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 
 import java.util.HashMap;
-import java.util.Map;
+import static evan.org.vienhance.domain.enhanceFilter.*;
 
 /**
  * Create By yejiaquan in 2018/10/25 14:13
@@ -144,14 +144,14 @@ public class MainFragment extends Fragment implements MainContract.View {
     };
 
     @Override
-    public void show(Mat dst, Handler handler) {
+    public void show(Mat dst, Handler handler, int type) {
         Message m = new Message();
-        m.arg1 = 1;
+        m.arg1 = type;
         m.obj = dst;
         handler.sendMessage(m);
     }
 
-    HashMap<String, Float> argsMap = new HashMap();
+    private HashMap<String, Float> argsMap = new HashMap<>();
 
     class MyOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener{
 
@@ -160,13 +160,14 @@ public class MainFragment extends Fragment implements MainContract.View {
         private int min;
         private TextView tv;
 
-        public MyOnSeekBarChangeListener(TextView tv, String n, int min, int max){
+        MyOnSeekBarChangeListener(TextView tv, String n, int min, int max){
             this.n = n;
             this.min = min;
             this.max = max;
             this.tv = tv;
         }
 
+        @SuppressLint("SetTextI18n")
         @Override
         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
             float v = (float) i / 100 * (max - min);
@@ -193,6 +194,7 @@ public class MainFragment extends Fragment implements MainContract.View {
             this.t = t;
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         @Override
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
@@ -228,17 +230,17 @@ public class MainFragment extends Fragment implements MainContract.View {
             Mat mRgba = inputFrame.rgba();
             presenter.setRGBA(mRgba);
             if (t == 1){
-                presenter.getEnhance("", handler);
+                presenter.getEnhance(ORIGINAL, handler);
             }else if(t == 2){
-                presenter.getEnhance("gray",handler);
+                presenter.getEnhance(GRAY,handler);
             }else if(t == 3){
                 if (argsMap.get("center") != null && argsMap.get("row") != null && argsMap.get("col") != null)
                     presenter.setArgs(new float[]{argsMap.get("center"), argsMap.get("row"), argsMap.get("col")});
-                presenter.getEnhance("laplace",handler);
+                presenter.getEnhance(LAPLACE,handler);
             }else if(t == 4){
-                presenter.getEnhance("gama",handler);
+                presenter.getEnhance(GAMMA,handler);
             }else{
-                presenter.getEnhance("",handler);
+                presenter.getEnhance(ORIGINAL,handler);
             }
         }
     }
