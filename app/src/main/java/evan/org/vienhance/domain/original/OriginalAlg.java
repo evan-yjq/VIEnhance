@@ -1,9 +1,9 @@
 package evan.org.vienhance.domain.original;
 
-import android.support.annotation.NonNull;
 import evan.org.vienhance.domain.enhanceAlg;
-import evan.org.vienhance.util.AppExecutors;
 import org.opencv.core.Mat;
+
+import static evan.org.vienhance.domain.enhanceFilter.ORIGINAL;
 
 /**
  * Create By yejiaquan in 2018/10/29 13:18
@@ -12,19 +12,13 @@ public class OriginalAlg implements enhanceAlg {
 
     private static volatile OriginalAlg INSTANCE;
 
-    private AppExecutors mAppExecutors;
-
     private Mat src;
 
-    private OriginalAlg(@NonNull AppExecutors appExecutors){
-        mAppExecutors = appExecutors;
-    }
-
-    public static OriginalAlg getInstance(@NonNull AppExecutors appExecutors){
+    public static OriginalAlg getInstance(){
         if (INSTANCE == null){
             synchronized (OriginalAlg.class){
                 if (INSTANCE == null){
-                    INSTANCE = new OriginalAlg(appExecutors);
+                    INSTANCE = new OriginalAlg();
                 }
             }
         }
@@ -44,11 +38,6 @@ public class OriginalAlg implements enhanceAlg {
 
     @Override
     public void result(final AlgCallback callback) {
-        mAppExecutors.diskIO().execute(new Runnable() {
-            @Override
-            public void run() {
-                callback.result(src);
-            }
-        });
+        callback.result(src, ORIGINAL);
     }
 }

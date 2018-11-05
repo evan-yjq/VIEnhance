@@ -1,4 +1,4 @@
-package evan.org.vienhance.domain.retinex;
+package evan.org.vienhance.domain.adjunction;
 
 import android.support.annotation.NonNull;
 import evan.org.vienhance.domain.enhanceAlg;
@@ -6,27 +6,25 @@ import evan.org.vienhance.domain.model.AlgContext;
 import org.opencv.core.Mat;
 
 /**
- * Create By yejiaquan in 2018/10/16 16:38
+ * Create By yejiaquan in 2018/11/5 14:20
  */
-public class SSRAlg implements enhanceAlg {
+public class AdjunctionAlg implements enhanceAlg {
 
-    private static volatile SSRAlg INSTANCE;
+    private static volatile AdjunctionAlg INSTANCE;
 
     private AlgContext context;
 
     private Mat src;
 
-//    private double fGamma;
-
-    private SSRAlg(@NonNull AlgContext context){
+    private AdjunctionAlg(@NonNull AlgContext context){
         this.context = context;
     }
 
-    public static SSRAlg getInstance(@NonNull AlgContext context){
+    public static AdjunctionAlg getInstance(@NonNull AlgContext context){
         if (INSTANCE == null){
-            synchronized (SSRAlg.class){
+            synchronized (AdjunctionAlg.class){
                 if (INSTANCE == null){
-                    INSTANCE = new SSRAlg(context);
+                    INSTANCE = new AdjunctionAlg(context);
                 }
             }
         }
@@ -35,6 +33,7 @@ public class SSRAlg implements enhanceAlg {
 
     @Override
     public enhanceAlg src(Mat src) {
+        this.src = src;
         return this;
     }
 

@@ -6,6 +6,7 @@ import evan.org.vienhance.UseCase;
 import evan.org.vienhance.domain.gamma.GammaAlg;
 import evan.org.vienhance.domain.gray.GrayAlg;
 import evan.org.vienhance.domain.laplace.LaplaceAlg;
+import evan.org.vienhance.domain.model.AlgContext;
 import evan.org.vienhance.domain.original.OriginalAlg;
 import evan.org.vienhance.util.AppExecutors;
 import org.opencv.core.Mat;
@@ -26,25 +27,27 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
         Mat src = requestValues.getSrc();
         float[]args = requestValues.getArgs();
         final int type = requestValues.getType();
+        final AlgContext context = requestValues.getContext();
         enhanceAlg alg;
         switch (type) {
             case LAPLACE:
-                alg = LaplaceAlg.getInstance(new AppExecutors()).src(src).args(args);
+                alg = LaplaceAlg.getInstance(context).src(src).args(args);
                 break;
             case GAMMA:
-                alg = GammaAlg.getInstance(new AppExecutors()).src(src);
+                alg = GammaAlg.getInstance(context).src(src);
                 break;
             case GRAY:
-                alg = GrayAlg.getInstance(new AppExecutors()).src(src);
+                alg = GrayAlg.getInstance(context).src(src);
                 break;
             default:
-                alg = OriginalAlg.getInstance(new AppExecutors()).src(src);
+                alg = OriginalAlg.getInstance().src(src);
                 break;
         }
         alg.result(new enhanceAlg.AlgCallback() {
             @Override
-            public void result(Mat dst) {
-                getUseCaseCallback().onSuccess(new ResponseValue(dst, type));
+            public void result(Mat dst, int tp) {
+                if (tp == type) getUseCaseCallback().onSuccess(new ResponseValue(dst, type, context));
+                else getUseCaseCallback().onError();
             }
         });
 
@@ -58,9 +61,12 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
 
         private final int type;
 
-        public RequestValues(@NonNull Mat src, @Nullable float[] args, @NonNull int type) {
+        private final AlgContext context;
+
+        public RequestValues(@NonNull Mat src, @Nullable float[] args, @NonNull int type, @NonNull AlgContext context) {
             this.src = checkNotNull(src,"src cannot be null!");
             this.type = checkNotNull(type,"type cannot be null!");
+            this.context = checkNotNull(context,"context cannot be null!");
             this.args = args;
         }
 
@@ -75,6 +81,10 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
         public int getType() {
             return type;
         }
+
+        public AlgContext getContext() {
+            return context;
+        }
     }
 
     public static final class ResponseValue implements UseCase.ResponseValue {
@@ -82,9 +92,12 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
 
         private final int type;
 
-        public ResponseValue(@NonNull Mat dst, int type) {
+        private final AlgContext context;
+
+        public ResponseValue(@NonNull Mat dst, int type, @NonNull AlgContext context) {
             this.dst = checkNotNull(dst, "dst cannot be null!");
             this.type = checkNotNull(type, "type cannot be null!");
+            this.context = checkNotNull(context,"context cannot be null!");
         }
 
         public Mat getDst() {
@@ -93,6 +106,10 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
 
         public int getType() {
             return type;
+        }
+
+        public AlgContext getContext() {
+            return context;
         }
     }
 }

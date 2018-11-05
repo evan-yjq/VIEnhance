@@ -3,7 +3,7 @@ package evan.org.vienhance.domain.gamma;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import evan.org.vienhance.domain.enhanceAlg;
-import evan.org.vienhance.util.AppExecutors;
+import evan.org.vienhance.domain.model.AlgContext;
 import org.opencv.core.Mat;
 
 import java.util.Date;
@@ -11,6 +11,7 @@ import java.util.Date;
 import static org.opencv.core.Core.NORM_MINMAX;
 import static org.opencv.core.Core.*;
 import static org.opencv.core.CvType.CV_32FC3;
+import static evan.org.vienhance.domain.enhanceFilter.GAMMA;
 
 /**
  * Create By yejiaquan in 2018/10/25 13:49
@@ -21,21 +22,21 @@ public class GammaAlg implements enhanceAlg {
 
     private static double[]lut = new double[256];
 
-    private AppExecutors mAppExecutors;
+    private AlgContext context;
 
     private Mat src;
 
     private double fGamma;
 
-    private GammaAlg(@NonNull AppExecutors appExecutors){
-        mAppExecutors = appExecutors;
+    private GammaAlg(@NonNull AlgContext context){
+        this.context = context;
     }
 
-    public static GammaAlg getInstance(@NonNull AppExecutors appExecutors){
+    public static GammaAlg getInstance(@NonNull AlgContext context){
         if (INSTANCE == null){
             synchronized (GammaAlg.class){
                 if (INSTANCE == null){
-                    INSTANCE = new GammaAlg(appExecutors);
+                    INSTANCE = new GammaAlg(context);
                     for (int i = 0; i < 256; i++) lut[i] = Math.pow(i, 3);
                 }
             }
@@ -56,7 +57,7 @@ public class GammaAlg implements enhanceAlg {
 
     @Override
     public void result(final AlgCallback callback) {
-        mAppExecutors.diskIO().execute(new Runnable() {
+        context.getAppExecutors().algIO().execute(new Runnable() {
             @Override
             public void run() {
                 long step0 = new Date().getTime();
@@ -79,7 +80,7 @@ public class GammaAlg implements enhanceAlg {
                 Log.e("step2", ""+(step2-step1));
                 Log.e("step3", ""+(step3-step2));
                 Log.e("step4", ""+(step4-step3));
-                callback.result(dst);
+                callback.result(dst, GAMMA);
             }
         });
     }

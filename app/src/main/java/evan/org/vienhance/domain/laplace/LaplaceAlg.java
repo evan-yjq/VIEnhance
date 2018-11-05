@@ -3,7 +3,7 @@ package evan.org.vienhance.domain.laplace;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import evan.org.vienhance.domain.enhanceAlg;
-import evan.org.vienhance.util.AppExecutors;
+import evan.org.vienhance.domain.model.AlgContext;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
@@ -11,6 +11,7 @@ import java.util.Date;
 
 import static org.opencv.core.CvType.CV_32FC1;
 import static org.opencv.core.CvType.CV_8UC3;
+import static evan.org.vienhance.domain.enhanceFilter.LAPLACE;
 
 /**
  * Create By yejiaquan in 2018/10/29 11:49
@@ -25,21 +26,21 @@ public class LaplaceAlg implements enhanceAlg{
 
     private static final float MASK_COL = -1;
 
-    private AppExecutors mAppExecutors;
+    private AlgContext context;
 
     private Mat src;
 
     private float center, row, col;
 
-    private LaplaceAlg(@NonNull AppExecutors appExecutors){
-        mAppExecutors = appExecutors;
+    private LaplaceAlg(@NonNull AlgContext context){
+        this.context = context;
     }
 
-    public static LaplaceAlg getInstance(@NonNull AppExecutors appExecutors){
+    public static LaplaceAlg getInstance(@NonNull AlgContext context){
         if (INSTANCE == null){
             synchronized (LaplaceAlg.class){
                 if (INSTANCE == null){
-                    INSTANCE = new LaplaceAlg(appExecutors);
+                    INSTANCE = new LaplaceAlg(context);
                 }
             }
         }
@@ -47,7 +48,7 @@ public class LaplaceAlg implements enhanceAlg{
     }
 
     public void result(@NonNull final enhanceAlg.AlgCallback callback) {
-        mAppExecutors.diskIO().execute(new Runnable() {
+        context.getAppExecutors().algIO().execute(new Runnable() {
             @Override
             public void run() {
                 long step0 = new Date().getTime();
@@ -77,7 +78,7 @@ public class LaplaceAlg implements enhanceAlg{
                 kernel.put(2, 2, i);
                 Imgproc.filter2D(src, dst, CV_8UC3, kernel);
                 long step1 = new Date().getTime();
-                callback.result(dst);
+                callback.result(dst, LAPLACE);
                 Log.e("LaplaceAlg:", ""+(step1-step0));
             }
         });
