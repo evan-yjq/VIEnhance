@@ -9,12 +9,20 @@ import android.os.Bundle;
 import android.view.*;
 import evan.org.vienhance.Injection;
 import evan.org.vienhance.R;
+import evan.org.vienhance.domain.model.AlgContext;
 import evan.org.vienhance.util.ActivityUtils;
 
 import android.util.Log;
+import evan.org.vienhance.util.AppExecutors;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "Main::Activity";
+
+    private final AlgContext context;
+
+    private MainActivity(){
+        context = AlgContext.getInstance(new AppExecutors());
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +40,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         MainPresenter presenter = new MainPresenter(mainFragment,
-                Injection.provideUseCaseHandler());
+                Injection.provideUseCaseHandler(), context);
     }
 }

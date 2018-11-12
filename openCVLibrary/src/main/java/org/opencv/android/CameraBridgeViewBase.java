@@ -401,49 +401,48 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.arg1 == 1){
-                Mat modified = (Mat)msg.obj;
-                boolean bmpValid = true;
-                if (modified != null) {
-                    try {
-                        Utils.matToBitmap(modified, mCacheBitmap);
-                    } catch(Exception e) {
-                        Log.e(TAG, "Mat type: " + modified);
-                        Log.e(TAG, "Bitmap type: " + mCacheBitmap.getWidth() + "*" + mCacheBitmap.getHeight());
-                        Log.e(TAG, "Utils.matToBitmap() throws an exception: " + e.getMessage());
-                        bmpValid = false;
-                    }
+            Mat modified = (Mat)msg.obj;
+            boolean bmpValid = true;
+            if (modified != null) {
+                try {
+                    Utils.matToBitmap(modified, mCacheBitmap);
+                } catch(Exception e) {
+                    Log.e(TAG, "Mat type: " + modified);
+                    Log.e(TAG, "Bitmap type: " + mCacheBitmap.getWidth() + "*" + mCacheBitmap.getHeight());
+                    Log.e(TAG, "Utils.matToBitmap() throws an exception: " + e.getMessage());
+                    bmpValid = false;
                 }
+            }
 
-                if (bmpValid && mCacheBitmap != null) {
-                    Canvas canvas = getHolder().lockCanvas();
-                    if (canvas != null) {
-                        canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
+            if (bmpValid && mCacheBitmap != null) {
+                Canvas canvas = getHolder().lockCanvas();
+                if (canvas != null) {
+                    canvas.drawColor(0, android.graphics.PorterDuff.Mode.CLEAR);
 
-                        int rotation = windowManager.getDefaultDisplay().getRotation();
-                        int degrees = 0;
-                        // config degrees as you need
-                        switch (rotation) {
-                            case Surface.ROTATION_0:
-                                degrees = 90;
-                                break;
-                            case Surface.ROTATION_90:
-                                degrees = 0;
-                                break;
-                            case Surface.ROTATION_180:
-                                degrees = 270;
-                                break;
-                            case Surface.ROTATION_270:
-                                degrees = 180;
-                                break;
-                        }
-                        Matrix matrix = new Matrix();
-                        matrix.postRotate(degrees);
-                        Bitmap outputBitmap = Bitmap.createBitmap(mCacheBitmap, 0, 0, mCacheBitmap.getWidth(), mCacheBitmap.getHeight(), matrix, true);
+                    int rotation = windowManager.getDefaultDisplay().getRotation();
+                    int degrees = 0;
+                    // config degrees as you need
+                    switch (rotation) {
+                        case Surface.ROTATION_0:
+                            degrees = 90;
+                            break;
+                        case Surface.ROTATION_90:
+                            degrees = 0;
+                            break;
+                        case Surface.ROTATION_180:
+                            degrees = 270;
+                            break;
+                        case Surface.ROTATION_270:
+                            degrees = 180;
+                            break;
+                    }
+                    Matrix matrix = new Matrix();
+                    matrix.postRotate(degrees);
+                    Bitmap outputBitmap = Bitmap.createBitmap(mCacheBitmap, 0, 0, mCacheBitmap.getWidth(), mCacheBitmap.getHeight(), matrix, true);
 
 
-                        if (BuildConfig.DEBUG)
-                            Log.d(TAG, "mStretch value: " + mScale);
+                    if (BuildConfig.DEBUG)
+                        Log.d(TAG, "mStretch value: " + mScale);
 
 //                if (mScale != 0) {
 //                    canvas.drawBitmap(outputBitmap, new Rect(0,0,outputBitmap.getWidth(), outputBitmap.getHeight()),
@@ -458,15 +457,14 @@ public abstract class CameraBridgeViewBase extends SurfaceView implements Surfac
 //                         (canvas.getWidth() - outputBitmap.getWidth()) / 2 + outputBitmap.getWidth(),
 //                         (canvas.getHeight() - outputBitmap.getHeight()) / 2 + outputBitmap.getHeight()), null);
 //                }
-                        canvas.drawBitmap(outputBitmap, new Rect(0, 0, outputBitmap.getWidth(), outputBitmap.getHeight()),
-                                new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), new Paint());
+                    canvas.drawBitmap(outputBitmap, new Rect(0, 0, outputBitmap.getWidth(), outputBitmap.getHeight()),
+                            new Rect(0, 0, canvas.getWidth(), canvas.getHeight()), new Paint());
 
-                        if (mFpsMeter != null) {
-                            mFpsMeter.measure();
-                            mFpsMeter.draw(canvas, 20, 30);
-                        }
-                        getHolder().unlockCanvasAndPost(canvas);
+                    if (mFpsMeter != null) {
+                        mFpsMeter.measure();
+                        mFpsMeter.draw(canvas, 20, 30);
                     }
+                    getHolder().unlockCanvasAndPost(canvas);
                 }
             }
         }

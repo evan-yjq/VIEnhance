@@ -14,6 +14,6 @@ public interface enhanceAlg <T extends enhanceAlg>{
     void result(AlgCallback callback);
 
     interface AlgCallback{
-        void result(Mat dst, int type);
+        void result(Mat dst);
     }
 }

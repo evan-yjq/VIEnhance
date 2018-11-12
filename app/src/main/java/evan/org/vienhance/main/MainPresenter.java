@@ -5,7 +5,6 @@ import evan.org.vienhance.UseCase;
 import evan.org.vienhance.UseCaseHandler;
 import evan.org.vienhance.domain.enhanceUseCase;
 import evan.org.vienhance.domain.model.AlgContext;
-import evan.org.vienhance.util.AppExecutors;
 import evan.org.vienhance.util.Objects;
 import org.opencv.core.Mat;
 
@@ -25,20 +24,22 @@ public class MainPresenter implements MainContract.Presenter {
     private Mat src;
     private float[] args;
 
-    private static AlgContext context;
+    private final AlgContext context;
 
 
     public MainPresenter(@NonNull MainContract.View mView,
-                         @NonNull UseCaseHandler mUseCaseHandler) {
+                         @NonNull UseCaseHandler mUseCaseHandler,
+                         @NonNull AlgContext context) {
         this.mUseCaseHandler = Objects.checkNotNull(mUseCaseHandler);
         this.mView = Objects.checkNotNull(mView);
+        this.context = Objects.checkNotNull(context);
 
         mView.setPresenter(this);
+        mView.setContext(context);
     }
 
     @Override
     public void start() {
-        context = AlgContext.getInstance(new AppExecutors());
     }
 
     @Override
@@ -55,12 +56,12 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void getEnhance(int type, final Handler handler) {
+        context.clearEnhance().addEnhance(type, 1);
         mUseCaseHandler.execute(new enhanceUseCase(), new enhanceUseCase.RequestValues(src, args, type, context),
                 new UseCase.UseCaseCallback<enhanceUseCase.ResponseValue>() {
                     @Override
                     public void onSuccess(enhanceUseCase.ResponseValue response) {
                         mView.show(response.getDst(), handler, response.getType());
-                        context = response.getContext();
                     }
 
                     @Override

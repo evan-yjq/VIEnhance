@@ -8,7 +8,6 @@ import evan.org.vienhance.domain.gray.GrayAlg;
 import evan.org.vienhance.domain.laplace.LaplaceAlg;
 import evan.org.vienhance.domain.model.AlgContext;
 import evan.org.vienhance.domain.original.OriginalAlg;
-import evan.org.vienhance.util.AppExecutors;
 import org.opencv.core.Mat;
 
 import static evan.org.vienhance.util.Objects.checkNotNull;
@@ -45,9 +44,8 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
         }
         alg.result(new enhanceAlg.AlgCallback() {
             @Override
-            public void result(Mat dst, int tp) {
-                if (tp == type) getUseCaseCallback().onSuccess(new ResponseValue(dst, type, context));
-                else getUseCaseCallback().onError();
+            public void result(Mat dst) {
+                getUseCaseCallback().onSuccess(new ResponseValue(dst, type));
             }
         });
 
@@ -92,12 +90,9 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
 
         private final int type;
 
-        private final AlgContext context;
-
-        public ResponseValue(@NonNull Mat dst, int type, @NonNull AlgContext context) {
+        public ResponseValue(@NonNull Mat dst, int type) {
             this.dst = checkNotNull(dst, "dst cannot be null!");
             this.type = checkNotNull(type, "type cannot be null!");
-            this.context = checkNotNull(context,"context cannot be null!");
         }
 
         public Mat getDst() {
@@ -106,10 +101,6 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
 
         public int getType() {
             return type;
-        }
-
-        public AlgContext getContext() {
-            return context;
         }
     }
 }

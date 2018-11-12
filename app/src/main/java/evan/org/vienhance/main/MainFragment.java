@@ -17,6 +17,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import evan.org.vienhance.R;
+import evan.org.vienhance.domain.model.AlgContext;
 import org.jetbrains.annotations.NotNull;
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -36,6 +37,8 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     private MainContract.Presenter presenter = null;
     private CameraBridgeViewBase mOpenCvCameraView;
+
+    private AlgContext context;
 
     public static MainFragment newInstance(){
         return new MainFragment();
@@ -145,13 +148,19 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     @Override
     public void show(Mat dst, Handler handler, int type) {
-        Message m = new Message();
-        m.arg1 = type;
-        m.obj = dst;
-        handler.sendMessage(m);
+        if (context.isEnhance(type)) {
+            Message m = new Message();
+            m.obj = dst;
+            handler.sendMessage(m);
+        }
     }
 
     private HashMap<String, Float> argsMap = new HashMap<>();
+
+    @Override
+    public void setContext(@NotNull AlgContext context) {
+        this.context = context;
+    }
 
     class MyOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener{
 

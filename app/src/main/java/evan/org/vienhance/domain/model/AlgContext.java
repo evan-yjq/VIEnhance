@@ -1,7 +1,11 @@
 package evan.org.vienhance.domain.model;
 
+import android.annotation.SuppressLint;
 import android.graphics.Bitmap;
 import evan.org.vienhance.util.AppExecutors;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Create By yejiaquan in 2018/11/5 08:12
@@ -31,8 +35,13 @@ public class AlgContext {
 
     public static final int GIF = 2;
 
+    // 增强方式
+    private Map<Integer, Double> enhance_type;
+
+    @SuppressLint("UseSparseArrays")
     private AlgContext(AppExecutors appExecutors){
         APP_EXECUTORS = appExecutors;
+        enhance_type = new HashMap<>();
     }
 
     public static AlgContext getInstance(AppExecutors appExecutors){
@@ -44,6 +53,21 @@ public class AlgContext {
             }
         }
         return INSTANCE;
+    }
+
+    //
+    public void addEnhance(int type, double scale){
+        enhance_type.put(type, scale);
+    }
+
+    @SuppressLint("UseSparseArrays")
+    public AlgContext clearEnhance(){
+        enhance_type = new HashMap<>();
+        return this;
+    }
+
+    public boolean isEnhance(int type){
+        return enhance_type.containsKey(type);
     }
 
     //
