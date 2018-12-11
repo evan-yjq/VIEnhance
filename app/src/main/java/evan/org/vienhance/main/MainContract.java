@@ -14,6 +14,8 @@ public interface MainContract {
     interface View extends BaseView<Presenter> {
 
         void show(Mat dst, Handler handler, int type);
+
+        void reverse();
     }
 
 

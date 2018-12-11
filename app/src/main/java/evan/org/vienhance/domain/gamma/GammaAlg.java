@@ -60,27 +60,31 @@ public class GammaAlg implements enhanceAlg {
         context.getAppExecutors().algIO().execute(new Runnable() {
             @Override
             public void run() {
-                long step0 = new Date().getTime();
-                Mat dst = new Mat(src.size(), CV_32FC3);
-                long step1 = new Date().getTime();
-                for (int i = src.rows()-1; i >= 0 ; i--) {
-                    for (int j = src.cols() - 1; j >= 0; j--) {
-                        double[]v = src.get(i, j);
-                        double[]k = new double[]{lut[(int)(v[0])], lut[(int)(v[1])], lut[(int)(v[2])]};
-                        dst.put(i, j, k);
+                try {
+                    long step0 = new Date().getTime();
+                    Mat dst = new Mat(src.size(), CV_32FC3);
+                    long step1 = new Date().getTime();
+                    for (int i = src.rows() - 1; i >= 0; i--) {
+                        for (int j = src.cols() - 1; j >= 0; j--) {
+                            double[] v = src.get(i, j);
+                            double[] k = new double[]{lut[(int) (v[0])], lut[(int) (v[1])], lut[(int) (v[2])]};
+                            dst.put(i, j, k);
+                        }
                     }
-                }
 
-                long step2 = new Date().getTime();
-                normalize(dst, dst, 0, 255, NORM_MINMAX);
-                long step3 = new Date().getTime();
-                convertScaleAbs(dst, dst);
-                long step4 = new Date().getTime();
-                Log.e("step1", ""+(step1-step0));
-                Log.e("step2", ""+(step2-step1));
-                Log.e("step3", ""+(step3-step2));
-                Log.e("step4", ""+(step4-step3));
-                callback.result(dst);
+                    long step2 = new Date().getTime();
+                    normalize(dst, dst, 0, 255, NORM_MINMAX);
+                    long step3 = new Date().getTime();
+                    convertScaleAbs(dst, dst);
+                    long step4 = new Date().getTime();
+                    Log.e("step1", "" + (step1 - step0));
+                    Log.e("step2", "" + (step2 - step1));
+                    Log.e("step3", "" + (step3 - step2));
+                    Log.e("step4", "" + (step4 - step3));
+                    callback.result(dst);
+                }catch (Exception e){
+                    callback.result(src);
+                }
             }
         });
     }

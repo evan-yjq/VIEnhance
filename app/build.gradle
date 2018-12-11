@@ -47,14 +47,3 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation project(':openCVLibrary')
 }
-
-task nativeLibsToJar(type: Jar,description:'create a jar archive of the native libs'){
-    destinationDir file("$buildDir/native-libs")
-    baseName 'native-libs'
-    from fileTree(dir: 'libs',include: '**/*.so')
-    into 'lib/'
-}
-
-tasks.withType(JavaCompile){
-    compileTask -> compileTask.dependsOn(nativeLibsToJar)
-}

@@ -40,6 +40,8 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     private AlgContext context;
 
+    private boolean isPos;
+
     public static MainFragment newInstance(){
         return new MainFragment();
     }
@@ -63,6 +65,7 @@ public class MainFragment extends Fragment implements MainContract.View {
         FloatingActionButton mChangeButton = root.findViewById(R.id.change);
         FloatingActionButton mGamaButton = root.findViewById(R.id.gama);
         FloatingActionButton mFilterButton = root.findViewById(R.id.filter);
+        FloatingActionButton mReverseButton = root.findViewById(R.id.reverse);
         SeekBar arg1SeekBar = root.findViewById(R.id.arg1);
         SeekBar arg2SeekBar = root.findViewById(R.id.arg2);
         SeekBar arg3SeekBar = root.findViewById(R.id.arg3);
@@ -80,10 +83,18 @@ public class MainFragment extends Fragment implements MainContract.View {
 
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(1));
+        mOpenCvCameraView.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_BACK);
+        isPos = true;
 
         mChangeButton.setOnTouchListener(new MyOnTouchListener(LAPLACE));
         mFilterButton.setOnTouchListener(new MyOnTouchListener(GRAY));
         mGamaButton.setOnTouchListener(new MyOnTouchListener(GAMMA));
+        mReverseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                reverse();
+            }
+        });
         return root;
     }
 
@@ -244,5 +255,18 @@ public class MainFragment extends Fragment implements MainContract.View {
             presenter.setRGBA(mRgba);
             presenter.getEnhance(enh, handler);
         }
+    }
+
+    @Override
+    public void reverse() {
+        mOpenCvCameraView.setVisibility(SurfaceView.INVISIBLE);
+        if (isPos) {
+            mOpenCvCameraView.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_FRONT);
+            isPos = false;
+        }else{
+            mOpenCvCameraView.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_BACK);
+            isPos = true;
+        }
+        mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
     }
 }
