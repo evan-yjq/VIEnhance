@@ -38,6 +38,6 @@ public class OriginalAlg implements enhanceAlg {
 
     @Override
     public void result(final AlgCallback callback) {
-        callback.result(src, ORIGINAL);
+        callback.result(src);
     }
 }

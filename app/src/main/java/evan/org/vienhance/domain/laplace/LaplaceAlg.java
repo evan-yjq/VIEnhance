@@ -78,7 +78,7 @@ public class LaplaceAlg implements enhanceAlg{
                 kernel.put(2, 2, i);
                 Imgproc.filter2D(src, dst, CV_8UC3, kernel);
                 long step1 = new Date().getTime();
-                callback.result(dst, LAPLACE);
+                callback.result(dst);
                 Log.e("LaplaceAlg:", ""+(step1-step0));
             }
         });

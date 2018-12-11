@@ -80,7 +80,7 @@ public class GammaAlg implements enhanceAlg {
                 Log.e("step2", ""+(step2-step1));
                 Log.e("step3", ""+(step3-step2));
                 Log.e("step4", ""+(step4-step3));
-                callback.result(dst, GAMMA);
+                callback.result(dst);
             }
         });
     }

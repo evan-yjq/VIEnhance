@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final AlgContext context;
 
-    private MainActivity(){
+    public MainActivity(){
         context = AlgContext.getInstance(new AppExecutors());
     }
 

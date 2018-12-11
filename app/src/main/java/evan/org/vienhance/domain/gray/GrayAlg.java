@@ -58,7 +58,7 @@ public class GrayAlg implements enhanceAlg {
                 Mat dst = new Mat();
                 Imgproc.cvtColor(src, dst, COLOR_RGBA2GRAY);
                 long step1 = new Date().getTime();
-                callback.result(dst, GRAY);
+                callback.result(dst);
                 Log.e("GrayAlg:", ""+(step1-step0));
             }
         });

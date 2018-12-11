@@ -70,16 +70,20 @@ public class MainFragment extends Fragment implements MainContract.View {
         TextView txt2 = root.findViewById(R.id.txt2);
         TextView txt3 = root.findViewById(R.id.txt3);
 
-        arg1SeekBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener(txt1, "center", 2, 5));
+        arg1SeekBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener(txt1, "center", -8, 8));
         arg2SeekBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener(txt2, "row", -2, 2));
         arg3SeekBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener(txt3, "col", -2, 2));
+
+        arg1SeekBar.setProgress(81, true);
+        arg2SeekBar.setProgress(25, true);
+        arg3SeekBar.setProgress(25, true);
 
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(1));
 
-        mChangeButton.setOnTouchListener(new MyOnTouchListener(2));
-        mFilterButton.setOnTouchListener(new MyOnTouchListener(3));
-        mGamaButton.setOnTouchListener(new MyOnTouchListener(4));
+        mChangeButton.setOnTouchListener(new MyOnTouchListener(LAPLACE));
+        mFilterButton.setOnTouchListener(new MyOnTouchListener(GRAY));
+        mGamaButton.setOnTouchListener(new MyOnTouchListener(GAMMA));
         return root;
     }
 
@@ -197,10 +201,10 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     class MyOnTouchListener implements View.OnTouchListener{
 
-        private int t;
+        private int enh;
 
-        private MyOnTouchListener(int t){
-            this.t = t;
+        private MyOnTouchListener(int enh){
+            this.enh = enh;
         }
 
         @SuppressLint("ClickableViewAccessibility")
@@ -211,17 +215,17 @@ public class MainFragment extends Fragment implements MainContract.View {
                 mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(1));
             }else if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
                 //按住事件发生后执行代码的区域
-                mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(t));
+                mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(enh));
             }
             return true;
         }
     }
 
     class MyCvCameraViewListener2 implements CameraBridgeViewBase.CvCameraViewListener2 {
-        private int t;
+        private int enh;
 
-        private MyCvCameraViewListener2(int t){
-            this.t = t;
+        private MyCvCameraViewListener2(int enh){
+            this.enh = enh;
         }
 
         @Override
@@ -238,19 +242,7 @@ public class MainFragment extends Fragment implements MainContract.View {
         public void onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame, Handler handler) {
             Mat mRgba = inputFrame.rgba();
             presenter.setRGBA(mRgba);
-            if (t == 1){
-                presenter.getEnhance(ORIGINAL, handler);
-            }else if(t == 2){
-                presenter.getEnhance(GRAY,handler);
-            }else if(t == 3){
-                if (argsMap.get("center") != null && argsMap.get("row") != null && argsMap.get("col") != null)
-                    presenter.setArgs(new float[]{argsMap.get("center"), argsMap.get("row"), argsMap.get("col")});
-                presenter.getEnhance(LAPLACE,handler);
-            }else if(t == 4){
-                presenter.getEnhance(GAMMA,handler);
-            }else{
-                presenter.getEnhance(ORIGINAL,handler);
-            }
+            presenter.getEnhance(enh, handler);
         }
     }
 }
