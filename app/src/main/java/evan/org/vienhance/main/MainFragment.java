@@ -23,6 +23,7 @@ import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
 import java.util.HashMap;
@@ -252,6 +253,7 @@ public class MainFragment extends Fragment implements MainContract.View {
         @Override
         public void onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame, Handler handler) {
             Mat mRgba = inputFrame.rgba();
+            if (!isPos) Core.flip(mRgba, mRgba, 1);
             presenter.setRGBA(mRgba);
             presenter.getEnhance(enh, handler);
         }
