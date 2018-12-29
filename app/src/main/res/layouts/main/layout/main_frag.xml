@@ -28,34 +28,6 @@
             android:layout_margin="@dimen/fab_margin"
             app:srcCompat="@mipmap/ic_btn_reverse"/>
 
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/gama"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@mipmap/ic_btn_gama"/>
-
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/filter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@mipmap/ic_btn_laplace"/>
-
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/change"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_margin="@dimen/fab_margin"
-            app:srcCompat="@mipmap/ic_btn_gray"/>
-
     <SeekBar android:id="@+id/arg1"
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -102,5 +74,46 @@
             app:layout_constraintTop_toTopOf="@+id/arg3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+                android:text="模式选择"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"/>
+
+        <!--<Button-->
+                <!--android:id="@+id/gamma"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_margin="@dimen/fab_margin"-->
+                <!--android:text="伽马"-->
+                <!--app:srcCompat="@mipmap/ic_btn_gamma"/>-->
+
+        <Button
+                android:id="@+id/laplace"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                android:text="拉普拉斯"
+                app:srcCompat="@mipmap/ic_btn_laplace"/>
+
+        <Button
+                android:id="@+id/gray"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                android:text="灰度"
+                app:srcCompat="@mipmap/ic_btn_gray"/>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

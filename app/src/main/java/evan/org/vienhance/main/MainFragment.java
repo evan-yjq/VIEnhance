@@ -13,6 +13,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,6 +27,7 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import static evan.org.vienhance.domain.enhanceFilter.*;
 
@@ -63,9 +65,9 @@ public class MainFragment extends Fragment implements MainContract.View {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.main_frag, container, false);
         mOpenCvCameraView = root.findViewById(R.id.surface_view);
-        FloatingActionButton mChangeButton = root.findViewById(R.id.change);
-        FloatingActionButton mGamaButton = root.findViewById(R.id.gama);
-        FloatingActionButton mFilterButton = root.findViewById(R.id.filter);
+        Button mChangeButton = root.findViewById(R.id.laplace);
+//        Button mGamaButton = root.findViewById(R.id.gamma);
+        Button mFilterButton = root.findViewById(R.id.gray);
         FloatingActionButton mReverseButton = root.findViewById(R.id.reverse);
         SeekBar arg1SeekBar = root.findViewById(R.id.arg1);
         SeekBar arg2SeekBar = root.findViewById(R.id.arg2);
@@ -74,22 +76,22 @@ public class MainFragment extends Fragment implements MainContract.View {
         TextView txt2 = root.findViewById(R.id.txt2);
         TextView txt3 = root.findViewById(R.id.txt3);
 
-        arg1SeekBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener(txt1, "center", -8, 8));
-        arg2SeekBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener(txt2, "row", -2, 2));
-        arg3SeekBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener(txt3, "col", -2, 2));
+        arg1SeekBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener(txt1, 0, -8, 8));
+        arg2SeekBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener(txt2, 1, -2, 2));
+        arg3SeekBar.setOnSeekBarChangeListener(new MyOnSeekBarChangeListener(txt3, 2, -2, 2));
 
         arg1SeekBar.setProgress(81, true);
         arg2SeekBar.setProgress(25, true);
         arg3SeekBar.setProgress(25, true);
 
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
-        mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(1));
+        mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(ORIGINAL));
         mOpenCvCameraView.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_BACK);
         isPos = true;
 
         mChangeButton.setOnTouchListener(new MyOnTouchListener(LAPLACE));
         mFilterButton.setOnTouchListener(new MyOnTouchListener(GRAY));
-        mGamaButton.setOnTouchListener(new MyOnTouchListener(GAMMA));
+//        mGamaButton.setOnTouchListener(new MyOnTouchListener(GAMMA));
         mReverseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -171,7 +173,8 @@ public class MainFragment extends Fragment implements MainContract.View {
         }
     }
 
-    private HashMap<String, Float> argsMap = new HashMap<>();
+//    private HashMap<String, Float> argsMap = new HashMap<>();
+    private float[]argsmap = new float[3];
 
     @Override
     public void setContext(@NotNull AlgContext context) {
@@ -180,12 +183,13 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     class MyOnSeekBarChangeListener implements SeekBar.OnSeekBarChangeListener{
 
-        private String n;
+//        private String n;
+        private int n;
         private int max;
         private int min;
         private TextView tv;
 
-        MyOnSeekBarChangeListener(TextView tv, String n, int min, int max){
+        MyOnSeekBarChangeListener(TextView tv, int n, int min, int max){
             this.n = n;
             this.min = min;
             this.max = max;
@@ -196,8 +200,11 @@ public class MainFragment extends Fragment implements MainContract.View {
         @Override
         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
             float v = (float) i / 100 * (max - min);
-            argsMap.put(n, min + v);
-            tv.setText(""+(min+v));
+//            argsMap.put(n, min + v);
+            argsmap[n] = min + v;
+            DecimalFormat df =new DecimalFormat("0.00");
+            tv.setText(df.format(min + v));
+            presenter.setArgs(argsmap);
         }
 
         @Override
@@ -224,7 +231,7 @@ public class MainFragment extends Fragment implements MainContract.View {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
                 //松开事件发生后执行代码的区域
-                mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(1));
+                mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(ORIGINAL));
             }else if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
                 //按住事件发生后执行代码的区域
                 mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(enh));
