@@ -8,6 +8,7 @@ import evan.org.vienhance.domain.gray.GrayAlg;
 import evan.org.vienhance.domain.laplace.LaplaceAlg;
 import evan.org.vienhance.domain.model.AlgContext;
 import evan.org.vienhance.domain.original.OriginalAlg;
+import evan.org.vienhance.domain.retinex.MSRCRAlg;
 import org.opencv.core.Mat;
 
 import static evan.org.vienhance.util.Objects.checkNotNull;
@@ -37,6 +38,9 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
                 break;
             case GRAY:
                 alg = GrayAlg.getInstance(context).src(src);
+                break;
+            case MSRCR:
+                alg = MSRCRAlg.getInstance(context).src(src);
                 break;
             default:
                 alg = OriginalAlg.getInstance().src(src);

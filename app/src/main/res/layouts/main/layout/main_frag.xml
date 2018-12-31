@@ -92,10 +92,7 @@
                 <!--android:id="@+id/gamma"-->
                 <!--android:layout_weight="1"-->
                 <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_margin="@dimen/fab_margin"-->
-                <!--android:text="伽马"-->
-                <!--app:srcCompat="@mipmap/ic_btn_gamma"/>-->
+                <!--android:text="伽马"/>-->
 
         <Button
                 android:id="@+id/laplace"
@@ -103,8 +100,15 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fab_margin"
-                android:text="拉普拉斯"
-                app:srcCompat="@mipmap/ic_btn_laplace"/>
+                android:text="拉普拉斯"/>
+
+        <Button
+                android:id="@+id/msrcr"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fab_margin"
+                android:text="MSRCR"/>
 
         <Button
                 android:id="@+id/original"
@@ -112,8 +116,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fab_margin"
-                android:text="原画"
-                app:srcCompat="@mipmap/ic_btn_laplace"/>
+                android:text="原画"/>
 
         <Button
                 android:id="@+id/gray"
@@ -121,8 +124,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fab_margin"
-                android:text="灰度"
-                app:srcCompat="@mipmap/ic_btn_gray"/>
+                android:text="灰度"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
