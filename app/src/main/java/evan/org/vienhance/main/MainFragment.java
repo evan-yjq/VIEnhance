@@ -65,9 +65,9 @@ public class MainFragment extends Fragment implements MainContract.View {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.main_frag, container, false);
         mOpenCvCameraView = root.findViewById(R.id.surface_view);
-        Button mChangeButton = root.findViewById(R.id.laplace);
-//        Button mGamaButton = root.findViewById(R.id.gamma);
-        Button mFilterButton = root.findViewById(R.id.gray);
+        Button mLaplaceButton = root.findViewById(R.id.laplace);
+        Button mOriginalButton = root.findViewById(R.id.original);
+        Button mGrayButton = root.findViewById(R.id.gray);
         FloatingActionButton mReverseButton = root.findViewById(R.id.reverse);
         SeekBar arg1SeekBar = root.findViewById(R.id.arg1);
         SeekBar arg2SeekBar = root.findViewById(R.id.arg2);
@@ -89,9 +89,9 @@ public class MainFragment extends Fragment implements MainContract.View {
         mOpenCvCameraView.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_BACK);
         isPos = true;
 
-        mChangeButton.setOnTouchListener(new MyOnTouchListener(LAPLACE));
-        mFilterButton.setOnTouchListener(new MyOnTouchListener(GRAY));
-//        mGamaButton.setOnTouchListener(new MyOnTouchListener(GAMMA));
+        mLaplaceButton.setOnTouchListener(new MyOnTouchListener(LAPLACE));
+        mGrayButton.setOnTouchListener(new MyOnTouchListener(GRAY));
+        mOriginalButton.setOnTouchListener(new MyOnTouchListener(ORIGINAL));
         mReverseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -231,7 +231,7 @@ public class MainFragment extends Fragment implements MainContract.View {
         public boolean onTouch(View view, MotionEvent motionEvent) {
             if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
                 //松开事件发生后执行代码的区域
-                mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(ORIGINAL));
+//                mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(ORIGINAL));
             }else if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
                 //按住事件发生后执行代码的区域
                 mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(enh));
