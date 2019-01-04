@@ -10,7 +10,6 @@ import org.opencv.imgproc.Imgproc;
 import java.util.Date;
 
 import static org.opencv.imgproc.Imgproc.COLOR_RGBA2GRAY;
-import static evan.org.vienhance.domain.enhanceFilter.GRAY;
 
 /**
  * Create By yejiaquan in 2018/10/29 13:54
