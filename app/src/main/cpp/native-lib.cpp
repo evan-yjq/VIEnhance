@@ -77,3 +77,28 @@ extern "C"
     }
 }
 
+
+extern "C"
+{
+    JNIEXPORT void JNICALL Java_evan_org_vienhance_util_OpenCVNDKHelper_gamma
+        (JNIEnv *, jclass, jlong srcMatAddr, jlong dstMatAddr) {
+        Mat& srcMat = *(Mat*)srcMatAddr;
+        Mat& descriptors = *(Mat*)dstMatAddr;
+        Mat src;
+        cvtColor(srcMat, src, CV_RGBA2RGB);
+        Mat imageGamma(src.size(), CV_32FC3);
+        for (int i = 0; i < src.rows; i++){
+            for (int j = 0; j < src.cols; j++){
+                imageGamma.at<Vec3f>(i, j)[0] = (src.at<Vec3b>(i, j)[0])*(src.at<Vec3b>(i, j)[0])*(src.at<Vec3b>(i, j)[0]);
+                imageGamma.at<Vec3f>(i, j)[1] = (src.at<Vec3b>(i, j)[1])*(src.at<Vec3b>(i, j)[1])*(src.at<Vec3b>(i, j)[1]);
+                imageGamma.at<Vec3f>(i, j)[2] = (src.at<Vec3b>(i, j)[2])*(src.at<Vec3b>(i, j)[2])*(src.at<Vec3b>(i, j)[2]);
+            }
+        }
+        //归一化到0~255
+        normalize(imageGamma, imageGamma, 0, 255, CV_MINMAX);
+        //转换成8bit图像显示
+        convertScaleAbs(imageGamma, descriptors);
+    }
+}
+
+

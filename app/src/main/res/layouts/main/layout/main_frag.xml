@@ -92,12 +92,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"/>
 
-            <!--<Button-->
-                    <!--android:id="@+id/gamma"-->
-                    <!--android:layout_weight="1"-->
-                    <!--android:layout_width="0dp"-->
-                    <!--android:text="伽马"/>-->
-
             <Button
                     android:id="@+id/laplace"
                     android:layout_weight="1"
@@ -143,6 +137,20 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:text="直方图"/>
+
+            <Button
+                    android:id="@+id/gamma"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="伽马"/>
+
+            <Button
+                    android:id="@+id/select"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="从文件中选择"/>
         </LinearLayout>
     </LinearLayout>
 

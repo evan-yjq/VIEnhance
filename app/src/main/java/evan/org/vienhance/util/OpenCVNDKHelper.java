@@ -15,6 +15,8 @@ public class OpenCVNDKHelper {
 
     public native static void equalize(long srcMatAddr, long dstMatAddr);
 
+    public native static void gamma(long srcMatAddr, long dstMatAddr);
+
     public native static void lap(long srcMatAddr, long dstMatAddr, float center, float row, float col);
 
 }
