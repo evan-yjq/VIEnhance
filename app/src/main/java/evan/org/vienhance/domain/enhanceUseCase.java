@@ -3,6 +3,8 @@ package evan.org.vienhance.domain;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import evan.org.vienhance.UseCase;
+import evan.org.vienhance.domain.equalize.EqualizeAlg;
+import evan.org.vienhance.domain.face.FindFaceAlg;
 import evan.org.vienhance.domain.gamma.GammaAlg;
 import evan.org.vienhance.domain.gray.GrayAlg;
 import evan.org.vienhance.domain.laplace.LaplaceAlg;
@@ -41,6 +43,12 @@ public class enhanceUseCase extends UseCase<enhanceUseCase.RequestValues, enhanc
                 break;
             case MSRCR:
                 alg = MSRCRAlg.getInstance(context).src(src);
+                break;
+            case FACE:
+                alg = FindFaceAlg.getInstance(context).src(src);
+                break;
+            case EQUALIZE:
+                alg = EqualizeAlg.getInstance(context).src(src);
                 break;
             default:
                 alg = OriginalAlg.getInstance().src(src);

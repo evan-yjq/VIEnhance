@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private final AlgContext context;
 
     public MainActivity(){
-        context = AlgContext.getInstance(new AppExecutors());
+        context = AlgContext.getInstance(new AppExecutors(), this);
     }
 
     @Override

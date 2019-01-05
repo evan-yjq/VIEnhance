@@ -1,6 +1,7 @@
 package evan.org.vienhance.domain.model;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.graphics.Bitmap;
 import evan.org.vienhance.util.AppExecutors;
 
@@ -15,6 +16,8 @@ public class AlgContext {
     private static volatile AlgContext INSTANCE;
 
     private final AppExecutors APP_EXECUTORS;
+
+    private Context context;
 
     // 所选添加编号
     private int adjunction_num;
@@ -39,16 +42,17 @@ public class AlgContext {
     private Map<Integer, Double> enhance_type;
 
     @SuppressLint("UseSparseArrays")
-    private AlgContext(AppExecutors appExecutors){
+    private AlgContext(AppExecutors appExecutors, Context context){
         APP_EXECUTORS = appExecutors;
         enhance_type = new HashMap<>();
+        this.context = context;
     }
 
-    public static AlgContext getInstance(AppExecutors appExecutors){
+    public static AlgContext getInstance(AppExecutors appExecutors, Context context){
         if (INSTANCE == null){
             synchronized (AlgContext.class){
                 if (INSTANCE == null){
-                    INSTANCE = new AlgContext(appExecutors);
+                    INSTANCE = new AlgContext(appExecutors, context);
                 }
             }
         }
@@ -73,6 +77,10 @@ public class AlgContext {
     //
     public AppExecutors getAppExecutors(){
         return APP_EXECUTORS;
+    }
+
+    public Context getContext(){
+        return context;
     }
 
     // 获取当前帧添加的动画

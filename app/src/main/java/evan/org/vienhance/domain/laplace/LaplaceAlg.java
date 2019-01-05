@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import evan.org.vienhance.domain.enhanceAlg;
 import evan.org.vienhance.domain.model.AlgContext;
+import evan.org.vienhance.util.OpenCVNDKHelper;
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;
 
@@ -52,35 +53,10 @@ public class LaplaceAlg implements enhanceAlg{
         context.getAppExecutors().algIO().execute(new Runnable() {
             @Override
             public void run() {
-                long step0 = new Date().getTime();
                 Mat dst = new Mat();
-                Mat kernel = new Mat(3, 3, CV_32FC1);
-                float a[] = {0};
-                float b[] = {col};
-                float c[] = {0};
-
-                float d[] = {row};
-                float e[] = {center};
-                float f[] = {row};
-
-                float g[] = {0};
-                float h[] = {col};
-                float i[] = {0};
-                kernel.put(0, 0, a);
-                kernel.put(0, 1, b);
-                kernel.put(0, 2, c);
-
-                kernel.put(1, 0, d);
-                kernel.put(1, 1, e);
-                kernel.put(1, 2, f);
-
-                kernel.put(2, 0, g);
-                kernel.put(2, 1, h);
-                kernel.put(2, 2, i);
-                Imgproc.filter2D(src, dst, CV_8UC3, kernel);
-                long step1 = new Date().getTime();
+                OpenCVNDKHelper.lap(src.getNativeObjAddr(), dst.getNativeObjAddr(), center, row, col);
                 callback.result(dst);
-                Log.e("LaplaceAlg:", ""+(step1-step0));
+//                Log.e("LaplaceAlg:", ""+(step1-step0));
             }
         });
     }

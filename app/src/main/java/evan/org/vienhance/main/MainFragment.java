@@ -69,6 +69,8 @@ public class MainFragment extends Fragment implements MainContract.View {
         Button mOriginalButton = root.findViewById(R.id.original);
         Button mGrayButton = root.findViewById(R.id.gray);
         Button mMsrcrButton = root.findViewById(R.id.msrcr);
+        Button mFaceButton = root.findViewById(R.id.face);
+        Button mEqualizeButton = root.findViewById(R.id.equalize);
 
         FloatingActionButton mReverseButton = root.findViewById(R.id.reverse);
         SeekBar arg1SeekBar = root.findViewById(R.id.arg1);
@@ -95,6 +97,8 @@ public class MainFragment extends Fragment implements MainContract.View {
         mGrayButton.setOnTouchListener(new MyOnTouchListener(GRAY));
         mOriginalButton.setOnTouchListener(new MyOnTouchListener(ORIGINAL));
         mMsrcrButton.setOnTouchListener(new MyOnTouchListener(MSRCR));
+        mFaceButton.setOnTouchListener(new MyOnTouchListener(FACE));
+        mEqualizeButton.setOnTouchListener(new MyOnTouchListener(EQUALIZE));
         mReverseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

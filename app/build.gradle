@@ -15,11 +15,13 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
+                arguments "-DANDROID_STL=gnustl_static"
                 cppFlags "-std=c++11", "-frtti", "-fexceptions"
                 abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
             }
         }
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -36,6 +38,17 @@ android {
             jniLibs.srcDirs = ['src/main/jniLibs']
         }
     }
+
+//    task ndkBuild(type:Exec,description:'Compile JNI source via NDK'){
+//        commandLine "D:\\AndroidSDK\\ndk-bundle\\ndk-build.cmd",//配置ndk的路径
+//                'NDK_PROJECT_PATH=build/intermediates/ndk',//ndk默认的生成so的文件
+//                'NDK_LIBS_OUT=src/main/jniLibs',//配置的我们想要生成的so文件所在的位置
+//                'APP_BUILD_SCRIPT=src/main/cpp/Android.mk',//指定项目以这个mk的方式
+//                'NDK_APPLOCATION_MK=src/main/cpp/Application.mk'//指定项目以这个mk的方式
+//    }
+//    tasks.withType(JavaCompile){//使用ndkBuild
+//        compileTask ->compileTask.dependsOn ndkBuild
+//    }
 
     externalNativeBuild {
         cmake {
