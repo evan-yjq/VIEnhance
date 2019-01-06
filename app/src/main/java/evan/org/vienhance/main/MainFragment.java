@@ -13,10 +13,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.*;
-import android.widget.Button;
-import android.widget.SeekBar;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
+import com.flyco.tablayout.SegmentTabLayout;
+import com.flyco.tablayout.listener.OnTabSelectListener;
 import evan.org.vienhance.R;
 import evan.org.vienhance.domain.model.AlgContext;
 import org.jetbrains.annotations.NotNull;
@@ -51,7 +50,7 @@ public class MainFragment extends Fragment implements MainContract.View {
 
     @Override
     public boolean isActive() {
-        return false;
+        return this.isAdded();
     }
 
     @Override
@@ -59,19 +58,38 @@ public class MainFragment extends Fragment implements MainContract.View {
         this.presenter = presenter;
     }
 
+
+    private String[] mTitles_1 = {"原画", "灰度", "Laplace", "直方图", "伽马", "Face", "MSRCR"};
+
     @SuppressLint("ClickableViewAccessibility")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.main_frag, container, false);
+
         mOpenCvCameraView = root.findViewById(R.id.surface_view);
-        Button mLaplaceButton = root.findViewById(R.id.laplace);
-        Button mOriginalButton = root.findViewById(R.id.original);
-        Button mGrayButton = root.findViewById(R.id.gray);
-        Button mMsrcrButton = root.findViewById(R.id.msrcr);
-        Button mFaceButton = root.findViewById(R.id.face);
-        Button mEqualizeButton = root.findViewById(R.id.equalize);
-        Button mGammaButton = root.findViewById(R.id.gamma);
+
+        final LinearLayout l2 = root.findViewById(R.id.l2);
+        l2.setVisibility(View.GONE);
+
+        SegmentTabLayout tabLayout_1 = root.findViewById(R.id.tl_1);
+        tabLayout_1.setTabData(mTitles_1);
+
+        tabLayout_1.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelect(int position) {
+                if (position == 2){
+                    l2.setVisibility(View.VISIBLE);
+                }else {
+                    l2.setVisibility(View.GONE);
+                }
+                mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(position));
+            }
+
+            @Override
+            public void onTabReselect(int position) {
+            }
+        });
 
         FloatingActionButton mReverseButton = root.findViewById(R.id.reverse);
         SeekBar arg1SeekBar = root.findViewById(R.id.arg1);
@@ -94,13 +112,6 @@ public class MainFragment extends Fragment implements MainContract.View {
         mOpenCvCameraView.setCameraIndex(CameraBridgeViewBase.CAMERA_ID_BACK);
         isPos = true;
 
-        mLaplaceButton.setOnTouchListener(new MyOnTouchListener(LAPLACE));
-        mGrayButton.setOnTouchListener(new MyOnTouchListener(GRAY));
-        mOriginalButton.setOnTouchListener(new MyOnTouchListener(ORIGINAL));
-        mMsrcrButton.setOnTouchListener(new MyOnTouchListener(MSRCR));
-        mFaceButton.setOnTouchListener(new MyOnTouchListener(FACE));
-        mEqualizeButton.setOnTouchListener(new MyOnTouchListener(EQUALIZE));
-        mGammaButton.setOnTouchListener(new MyOnTouchListener(GAMMA));
         mReverseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,28 +235,6 @@ public class MainFragment extends Fragment implements MainContract.View {
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
 
-        }
-    }
-
-    class MyOnTouchListener implements View.OnTouchListener{
-
-        private int enh;
-
-        private MyOnTouchListener(int enh){
-            this.enh = enh;
-        }
-
-        @SuppressLint("ClickableViewAccessibility")
-        @Override
-        public boolean onTouch(View view, MotionEvent motionEvent) {
-            if(motionEvent.getAction()==MotionEvent.ACTION_UP) {
-                //松开事件发生后执行代码的区域
-//                mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(ORIGINAL));
-            }else if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-                //按住事件发生后执行代码的区域
-                mOpenCvCameraView.setCvCameraViewListener(new MyCvCameraViewListener2(enh));
-            }
-            return true;
         }
     }
 

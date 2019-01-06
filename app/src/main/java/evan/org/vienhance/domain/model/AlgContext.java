@@ -38,7 +38,7 @@ public class AlgContext {
 
     public static final int GIF = 2;
 
-    // 增强方式
+    // 增强方式(模式，比例)
     private Map<Integer, Double> enhance_type;
 
     @SuppressLint("UseSparseArrays")

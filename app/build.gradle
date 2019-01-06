@@ -39,17 +39,6 @@ android {
         }
     }
 
-//    task ndkBuild(type:Exec,description:'Compile JNI source via NDK'){
-//        commandLine "D:\\AndroidSDK\\ndk-bundle\\ndk-build.cmd",//配置ndk的路径
-//                'NDK_PROJECT_PATH=build/intermediates/ndk',//ndk默认的生成so的文件
-//                'NDK_LIBS_OUT=src/main/jniLibs',//配置的我们想要生成的so文件所在的位置
-//                'APP_BUILD_SCRIPT=src/main/cpp/Android.mk',//指定项目以这个mk的方式
-//                'NDK_APPLOCATION_MK=src/main/cpp/Application.mk'//指定项目以这个mk的方式
-//    }
-//    tasks.withType(JavaCompile){//使用ndkBuild
-//        compileTask ->compileTask.dependsOn ndkBuild
-//    }
-
     externalNativeBuild {
         cmake {
             path "CMakeLists.txt"
@@ -68,6 +57,10 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:design:26.1.0'
+
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.flyco.tablayout:FlycoTabLayout_Lib:2.1.2@aar'
+    
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

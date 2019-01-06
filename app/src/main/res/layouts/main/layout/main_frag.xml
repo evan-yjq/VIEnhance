@@ -2,8 +2,9 @@
 <android.support.constraint.ConstraintLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tl="http://schemas.android.com/apk/res-auto"
         xmlns:opencv="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
@@ -28,130 +29,78 @@
             android:layout_margin="@dimen/fab_margin"
             app:srcCompat="@mipmap/ic_btn_reverse"/>
 
-    <SeekBar android:id="@+id/arg1"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginBottom="24dp"
-            app:layout_constraintTop_toBottomOf="@+id/surface_view" tools:ignore="MissingConstraints"/>
-
-    <TextView
-            android:id="@+id/txt1"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/arg1"
+    <LinearLayout
+            android:id="@+id/l1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    <SeekBar android:id="@+id/arg2"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/arg1" tools:ignore="MissingConstraints"/>
-
-    <TextView
-            android:id="@+id/txt2"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/arg2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    <SeekBar android:id="@+id/arg3"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_marginBottom="24dp"
-            app:layout_constraintTop_toBottomOf="@+id/arg2" tools:ignore="MissingConstraints"/>
-
-    <TextView
-            android:id="@+id/txt3"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/arg3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            app:layout_constraintTop_toBottomOf="@+id/surface_view">
+        <com.flyco.tablayout.SegmentTabLayout
+                android:id="@+id/tl_1"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:layout_gravity="center_horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                tl:tl_bar_color="#ffffff"
+                tl:tl_indicator_color="#EC7263"
+                tl:tl_indicator_margin_bottom="2dp"
+                tl:tl_indicator_margin_left="2dp"
+                tl:tl_indicator_margin_right="2dp"
+                tl:tl_indicator_margin_top="2dp"
+                tl:tl_tab_width="45dp"
+                tl:tl_textBold="BOTH"/>
+    </LinearLayout>
 
     <LinearLayout
+            android:id="@+id/l2"
             android:orientation="vertical"
+            android:paddingTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
+            app:layout_constraintTop_toBottomOf="@+id/l1" >
         <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
             <TextView
-                    android:text="模式选择"
+                    android:id="@+id/txt1"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"/>
-
-            <Button
-                    android:id="@+id/laplace"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="拉普拉斯"/>
-
-            <Button
-                    android:id="@+id/msrcr"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="MSRCR"/>
-
-            <Button
-                    android:id="@+id/original"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="原画"/>
-
-            <Button
-                    android:id="@+id/gray"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="灰度"/>
-
-            <Button
-                    android:id="@+id/face"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="Face"/>
+                    android:layout_height="wrap_content"/>
+            <SeekBar
+                    android:id="@+id/arg1"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"/>
         </LinearLayout>
         <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <Button
-                    android:id="@+id/equalize"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="直方图"/>
-
-            <Button
-                    android:id="@+id/gamma"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="伽马"/>
-
-            <Button
-                    android:id="@+id/select"
-                    android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="从文件中选择"/>
+            <TextView
+                    android:id="@+id/txt2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <SeekBar
+                    android:id="@+id/arg2"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"/>
+        </LinearLayout>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:id="@+id/txt3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <SeekBar
+                    android:id="@+id/arg3"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"/>
         </LinearLayout>
     </LinearLayout>
+
 
 </android.support.constraint.ConstraintLayout>
